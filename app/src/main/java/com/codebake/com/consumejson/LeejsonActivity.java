@@ -46,7 +46,8 @@ public class LeejsonActivity extends AppCompatActivity {
         //LLAMAMOS UN JSON DESDE UN URL
         //String url="http://www.jorgepartal.xyz/jsontest/getUser.php";
 
-        String url = "http://server2.solcloud.cl/academia/retorno.json";
+        //String url = "http://server2.solcloud.cl/academia/retorno.json";
+        String url = "http://www.jorgepartal.xyz/test3/colegios.json";
         HttpURLConnection conn = null;
         try{
             conn = (HttpURLConnection) (new URL(url)).openConnection();
@@ -70,14 +71,16 @@ public class LeejsonActivity extends AppCompatActivity {
             System.out.println(jsonString);
 
             JSONObject jsonObj = new JSONObject(sb.toString().trim()); //AHORA INSTANCIAMOS LA CLASE JSON OBJECT
-            this.jsonArray = jsonObj.getJSONArray("usuarios"); // OBTENER EL ARREGLO JSON
+            this.jsonArray = jsonObj.getJSONArray("data"); // OBTENER EL ARREGLO JSON
 
             //RECORRERMOS EL JSON ARRAY
+
             for(int i = 0; i<jsonArray.length(); i++){
                 JSONObject o    = jsonArray.getJSONObject(i);
-                String nombre   = o.getString("nombre");
-                String apellido = o.getString("apellido");
-                adapter.add(nombre + " " + apellido );
+                Integer id = o.getInt("id");
+                String name   = o.getString("nombre");
+                String address = o.getString("apellido");
+                adapter.add(id +" "+name + " " + address );
             }
 
 

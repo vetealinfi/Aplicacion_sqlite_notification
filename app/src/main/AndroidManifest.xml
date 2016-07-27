@@ -25,7 +25,8 @@
             android:name=".LeejsonActivity"
             android:label="@string/title_activity_leejson"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".LeeDbActivity"></activity>
+        <activity android:name=".LeeDbActivity" />
+        <activity android:name=".PruebaSonidoActivity"></activity>
     </application>
 
 </manifest>
