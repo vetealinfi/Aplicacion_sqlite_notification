@@ -18,6 +18,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
 
 public class LeejsonActivity extends AppCompatActivity {
 
@@ -53,16 +55,35 @@ public class LeejsonActivity extends AppCompatActivity {
         try{
             URL urlConnection = new URL(url);
             conn = (HttpURLConnection) urlConnection.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Request Method", "GET");
+            //conn.setRequestMethod("GET");
+            conn.setUseCaches(false);
+            //conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
+            conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.connect();
 
+            Map<String, List<String>> map = conn.getHeaderFields();
+            System.out.println("Printing Response Header...\n");
 
-            Log.i("mensaje Message"," "+conn.getResponseMessage() );
-            Log.i("mensaje getResponseCode"," "+conn.getResponseCode() );
-            Log.i("mensaje url datos"," "+urlConnection.getPath() );
+            for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+                System.out.println("Key : " + entry.getKey()
+                        + " ,Value : " + entry.getValue());
+            }
+
+            System.out.println("\nGet Response Header By Key ...\n");
+            String server = conn.getHeaderField("Server");
+
+            if (server == null) {
+                System.out.println("Key 'Server' is not found!");
+            } else {
+                System.out.println("Server - " + server);
+            }
+
+            //Log.i("mensaje Message"," "+conn.getResponseMessage() );
+            //Log.i("mensaje getResponseCode"," "+conn.getResponseCode() );
+            //Log.i("mensaje url datos"," "+urlConnection.getPath() );
             if (conn.getResponseCode() == 200) {
                 InputStream is = conn.getInputStream();
                 BufferedReader buff = new BufferedReader(new InputStreamReader(is));
