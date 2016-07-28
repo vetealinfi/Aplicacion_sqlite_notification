@@ -47,19 +47,22 @@ public class LeejsonActivity extends AppCompatActivity {
         //LLAMAMOS UN JSON DESDE UN URL
         //String url="http://www.jorgepartal.xyz/jsontest/getUser.php";
 
-        //String url = "http://server2.solcloud.cl/academia/retorno.json";
+        //String url = "http://server2.solcloud.cl/academia/colegios.json";
         String url = "http://www.jorgepartal.xyz/test3/colegios.json";
         HttpURLConnection conn = null;
         try{
-            conn = (HttpURLConnection) (new URL(url)).openConnection();
+            URL urlConnection = new URL(url);
+            conn = (HttpURLConnection) urlConnection.openConnection();
             conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.connect();
 
+
             Log.i("mensaje Message"," "+conn.getResponseMessage() );
             Log.i("mensaje getResponseCode"," "+conn.getResponseCode() );
+            Log.i("mensaje url datos"," "+urlConnection.getPath() );
             if (conn.getResponseCode() == 200) {
                 InputStream is = conn.getInputStream();
                 BufferedReader buff = new BufferedReader(new InputStreamReader(is));
@@ -83,8 +86,8 @@ public class LeejsonActivity extends AppCompatActivity {
                 for(int i = 0; i<jsonArray.length(); i++){
                     JSONObject o    = jsonArray.getJSONObject(i);
                     Integer id = o.getInt("id");
-                    String name   = o.getString("nombre");
-                    String address = o.getString("apellido");
+                    String name   = o.getString("name");
+                    String address = o.getString("address");
                     adapter.add(id +" "+name + " " + address );
                 }
 
