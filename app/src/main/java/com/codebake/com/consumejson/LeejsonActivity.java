@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -51,37 +52,51 @@ public class LeejsonActivity extends AppCompatActivity {
         HttpURLConnection conn = null;
         try{
             conn = (HttpURLConnection) (new URL(url)).openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.connect();
-            InputStream is = conn.getInputStream();
 
-            BufferedReader buff = new BufferedReader(new InputStreamReader(is));
-            //stringbuilder se usa para concatenar objetos grandotes
-            StringBuilder sb = new StringBuilder();
-            String line = "-";
+            Log.i("mensaje Message"," "+conn.getResponseMessage() );
+            Log.i("mensaje getResponseCode"," "+conn.getResponseCode() );
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                BufferedReader buff = new BufferedReader(new InputStreamReader(is));
+                //stringbuilder se usa para concatenar objetos grandotes
+                StringBuilder sb = new StringBuilder();
+                String line = "-";
 
-            while( (line = buff.readLine()) !=null ){
-                sb.append(line).append(" \n");
+                while( (line = buff.readLine()) !=null ){
+                    sb.append(line).append(" \n");
+                }
+
+                String jsonString = sb.toString().trim(); //Quitamos los espacion en blanco
+
+                System.out.println(jsonString);
+
+                JSONObject jsonObj = new JSONObject(sb.toString().trim()); //AHORA INSTANCIAMOS LA CLASE JSON OBJECT
+                this.jsonArray = jsonObj.getJSONArray("data"); // OBTENER EL ARREGLO JSON
+
+                //RECORRERMOS EL JSON ARRAY
+
+                for(int i = 0; i<jsonArray.length(); i++){
+                    JSONObject o    = jsonArray.getJSONObject(i);
+                    Integer id = o.getInt("id");
+                    String name   = o.getString("nombre");
+                    String address = o.getString("apellido");
+                    adapter.add(id +" "+name + " " + address );
+                }
+
+                //ASOCIAMOS EL LIST VIEW AL ADAPTADOR
+                listaUsuarios.setAdapter(adapter);
+
             }
 
-            String jsonString = sb.toString().trim(); //Quitamos los espacion en blanco
 
-            System.out.println(jsonString);
 
-            JSONObject jsonObj = new JSONObject(sb.toString().trim()); //AHORA INSTANCIAMOS LA CLASE JSON OBJECT
-            this.jsonArray = jsonObj.getJSONArray("data"); // OBTENER EL ARREGLO JSON
 
-            //RECORRERMOS EL JSON ARRAY
 
-            for(int i = 0; i<jsonArray.length(); i++){
-                JSONObject o    = jsonArray.getJSONObject(i);
-                Integer id = o.getInt("id");
-                String name   = o.getString("nombre");
-                String address = o.getString("apellido");
-                adapter.add(id +" "+name + " " + address );
-            }
 
 
         }catch(Exception e){
@@ -89,8 +104,7 @@ public class LeejsonActivity extends AppCompatActivity {
         }
 
 
-        //ASOCIAMOS EL LIST VIEW AL ADAPTADOR
-        listaUsuarios.setAdapter(adapter);
+
 
 
         System.out.println("position = ");
